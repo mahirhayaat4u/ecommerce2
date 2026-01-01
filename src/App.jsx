@@ -1,11 +1,12 @@
 import React from "react";
-import Home from "./components/Home.jsx";
+import './index.css';
+import Home from './home/Home.jsx'
 
 const App = () => {
   return (
     <div>
-      Auth
       <Home />
+  
     </div>
   );
 };
