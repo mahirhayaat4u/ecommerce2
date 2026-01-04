@@ -27,7 +27,7 @@ const Navbar = () => {
         <div className="flex items-center gap-8">
 
           <h1 className="text-2xl font-extrabold text-green-600 tracking-wide">
-            logo
+            Aakash
           </h1>
           
               <div className="border-2 rounded flex gap-4 p-2">

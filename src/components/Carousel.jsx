@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 
 const images = [
-  "/B.png",
-  "/Ak.jpg",
-  "/B.png",
-  "/Ak.jpg",
-  "/B.png",
-  "/Ak.jpg",
+  "https://picsum.photos/600/400?random=1",
+  "https://picsum.photos/600/400?random=2",
+  "https://picsum.photos/600/400?random=3",
+  "https://picsum.photos/600/400?random=4",
+  "https://picsum.photos/600/400?random=5",
+  "https://picsum.photos/600/400?random=6",
 ];
 
 export default function Carousel() {
@@ -22,17 +22,26 @@ export default function Carousel() {
   const [index, setIndex] = useState(visible);
   const [transition, setTransition] = useState(true);
   const sliderRef = useRef(null);
+  const intervalRef = useRef(null);
 
-  // 🔁 Auto slide
-  useEffect(() => {
-    const timer = setInterval(() => {
+  // 🔁 Start autoplay
+  const startAutoplay = () => {
+    intervalRef.current = setInterval(() => {
       setIndex((prev) => prev + 1);
     }, 3000);
+  };
 
-    return () => clearInterval(timer);
+  // ⏸ Pause autoplay
+  const stopAutoplay = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  useEffect(() => {
+    startAutoplay();
+    return () => stopAutoplay();
   }, []);
 
-  // 🔁 Infinite loop fix (NO JUMP)
+  // 🔁 Infinite loop fix
   useEffect(() => {
     if (index === total + visible) {
       setTimeout(() => {
@@ -49,7 +58,7 @@ export default function Carousel() {
     }
   }, [index, total, visible]);
 
-  // re-enable transition
+  // Re-enable transition
   useEffect(() => {
     if (!transition) {
       requestAnimationFrame(() => {
@@ -59,14 +68,18 @@ export default function Carousel() {
   }, [transition]);
 
   return (
-    <div className="relative w-full overflow-hidden mt-4">
+    <div
+      className="relative w-full overflow-hidden mt-4"
+      onMouseEnter={stopAutoplay}   // ⏸ Pause on hover
+      onMouseLeave={startAutoplay}  // ▶ Resume on leave
+    >
       <div
         ref={sliderRef}
         className={`flex ${
           transition ? "transition-transform duration-500 ease-in-out" : ""
         }`}
         style={{
-          transform: `translateX(-${index * (150 / visible)}%)`,
+          transform: `translateX(-${index * (100 / visible)}%)`,
         }}
       >
         {sliderImages.map((img, i) => (
@@ -77,7 +90,7 @@ export default function Carousel() {
             <div className="h-[220px] md:h-[260px] lg:h-[300px] rounded-2xl overflow-hidden bg-gray-100">
               <img
                 src={img}
-                alt=""
+                alt={`Slide ${i}`}
                 className="w-full h-full object-cover"
               />
             </div>
